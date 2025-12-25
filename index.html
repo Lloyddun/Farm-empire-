@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Farm-Empire | Crypto & Elevage</title>
+    <title>Farm-Empire | Service d'Élevage Crypto</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -13,7 +13,7 @@
                 extend: {
                     colors: {
                         brand: {
-                            green: '#16a34a',
+                            green: '#059669',
                             gold: '#fbbf24',
                             dark: '#0f172a'
                         }
@@ -23,131 +23,128 @@
         }
     </script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-        body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
-        .glass-effect { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
         .page { display: none; }
         .page.active { display: block; }
-        .loader { border-top-color: #16a34a; animation: spin 1s linear infinite; }
+        .loader { border-top-color: #059669; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .glass { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); }
     </style>
 </head>
-<body class="bg-gray-50 text-slate-900 pb-20">
+<body class="bg-slate-50 text-slate-900 pb-10">
 
-    <!-- Header Fixe -->
-    <header class="glass-effect fixed top-0 w-full z-50 border-b px-4 py-3 flex justify-between items-center">
+    <!-- Header -->
+    <header class="glass fixed top-0 w-full z-50 border-b px-5 py-4 flex justify-between items-center">
         <div class="flex items-center gap-2" onclick="window.app.navigate('home')">
-            <div class="w-8 h-8 bg-brand-green rounded-lg flex items-center justify-center text-white font-black">F</div>
-            <span class="font-black text-xl tracking-tight text-brand-green">Farm<span class="text-slate-800">Empire</span></span>
+            <div class="w-8 h-8 bg-brand-green rounded-lg flex items-center justify-center text-white font-extrabold text-sm">FE</div>
+            <span class="font-extrabold text-lg tracking-tighter">FARM-EMPIRE</span>
         </div>
-        <div id="user-status" class="hidden flex items-center gap-2">
-            <span id="display-name" class="text-xs font-bold bg-gray-100 px-2 py-1 rounded">...</span>
-            <button onclick="window.app.logout()" class="text-red-500"><i class="fas fa-power-off"></i></button>
+        <div id="user-info" class="hidden flex items-center gap-3">
+            <span id="user-name" class="text-xs font-bold bg-slate-100 px-3 py-1.5 rounded-full text-slate-600">...</span>
+            <button onclick="window.app.logout()" class="text-slate-400 hover:text-red-500 transition"><i class="fas fa-sign-out-alt"></i></button>
         </div>
     </header>
 
-    <div id="main-container" class="pt-20">
+    <main id="content" class="pt-24 px-5 max-w-lg mx-auto">
         
-        <!-- PAGE : CONNEXION / INSCRIPTION -->
-        <section id="page-auth" class="page active container mx-auto px-6 flex flex-col items-center justify-center min-h-[80vh]">
-            <div class="w-full max-w-md bg-white p-8 rounded-3xl shadow-xl">
-                <div class="flex mb-8 bg-gray-100 p-1 rounded-xl">
-                    <button id="btn-tab-login" onclick="window.app.toggleAuth('login')" class="flex-1 py-2 rounded-lg font-bold text-brand-green bg-white shadow-sm">Connexion</button>
-                    <button id="btn-tab-reg" onclick="window.app.toggleAuth('register')" class="flex-1 py-2 rounded-lg font-bold text-gray-400">Inscription</button>
+        <!-- SECTION : AUTH -->
+        <section id="page-auth" class="page active">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-extrabold text-slate-900 mb-2">Bienvenue</h1>
+                <p class="text-slate-500">Connectez-vous pour gérer votre enclos crypto.</p>
+            </div>
+            
+            <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
+                <form id="form-login" onsubmit="window.app.handleAuth(event)" class="space-y-4">
+                    <div>
+                        <label class="text-xs font-bold text-slate-400 uppercase ml-1">Email</label>
+                        <input type="email" id="auth-email" class="w-full p-4 bg-slate-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-brand-green/20" placeholder="votre@email.com" required>
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-slate-400 uppercase ml-1">Mot de passe</label>
+                        <input type="password" id="auth-password" class="w-full p-4 bg-slate-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-brand-green/20" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" id="btn-auth" class="w-full bg-slate-900 text-white font-bold py-4 rounded-2xl shadow-lg active:scale-95 transition">Accéder à mon espace</button>
+                </form>
+                <p class="text-center mt-6 text-sm text-slate-400">Nouveau ? Le compte est créé automatiquement à la première connexion.</p>
+            </div>
+        </section>
+
+        <!-- SECTION : DASHBOARD (LE SERVICE) -->
+        <section id="page-dashboard" class="page">
+            <!-- Statut de l'enclos -->
+            <div id="status-inactive" class="hidden">
+                <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100 text-center mb-6">
+                    <div class="w-20 h-20 bg-amber-50 text-amber-500 rounded-full flex items-center justify-center text-3xl mx-auto mb-6">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <h2 class="text-2xl font-extrabold mb-3">Enclos Inactif</h2>
+                    <p class="text-slate-500 mb-8 leading-relaxed">Activez votre service d'élevage pour commencer à générer des **DOGE** automatiquement chaque jour.</p>
+                    
+                    <div class="bg-slate-50 p-5 rounded-2xl text-left mb-8 space-y-3">
+                        <div class="flex items-center gap-3 text-sm font-semibold">
+                            <i class="fas fa-check-circle text-brand-green"></i> Production : 2.5 DOGE / jour
+                        </div>
+                        <div class="flex items-center gap-3 text-sm font-semibold">
+                            <i class="fas fa-check-circle text-brand-green"></i> Retrait minimum : 50 DOGE
+                        </div>
+                        <div class="flex items-center gap-3 text-sm font-semibold">
+                            <i class="fas fa-check-circle text-brand-green"></i> Support technique 24/7
+                        </div>
+                    </div>
+
+                    <button onclick="window.app.activateService()" id="btn-pay" class="w-full bg-brand-green text-white font-black py-5 rounded-2xl shadow-xl shadow-green-100 flex justify-between items-center px-8 active:scale-95 transition">
+                        <span>ACTIVER L'ENCLOS</span>
+                        <span class="bg-white/20 px-3 py-1 rounded-lg text-sm">2 000 FCFA</span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="status-active" class="hidden">
+                <div class="bg-slate-900 rounded-[2.5rem] p-8 text-white shadow-2xl mb-6 relative overflow-hidden">
+                    <div class="relative z-10">
+                        <div class="flex items-center gap-2 mb-6">
+                            <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                            <span class="text-[10px] font-bold tracking-widest uppercase opacity-60">Production en cours</span>
+                        </div>
+                        <p class="text-xs font-bold opacity-50 uppercase mb-1">Revenus cumulés</p>
+                        <h3 class="text-5xl font-black mb-4"><span id="balance-val">0.00</span> <span class="text-brand-gold text-2xl">DOGE</span></h3>
+                        <div class="flex gap-4">
+                            <button onclick="window.app.withdraw()" class="flex-1 bg-white/10 hover:bg-white/20 py-3 rounded-xl font-bold text-sm transition">Retirer</button>
+                            <div class="flex-1 bg-green-500/20 border border-green-500/30 py-3 rounded-xl font-bold text-sm text-center">
+                                +2.5 / jour
+                            </div>
+                        </div>
+                    </div>
+                    <i class="fas fa-seedling absolute -right-6 -bottom-6 text-9xl opacity-10"></i>
                 </div>
 
-                <form id="form-login" onsubmit="window.app.handleLogin(event)" class="space-y-4">
-                    <input type="email" id="login-email" placeholder="Email" class="w-full p-4 rounded-xl border outline-none focus:ring-2 focus:ring-brand-green" required>
-                    <input type="password" id="login-password" placeholder="Mot de passe" class="w-full p-4 rounded-xl border outline-none focus:ring-2 focus:ring-brand-green" required>
-                    <button type="submit" class="w-full bg-brand-green text-white font-bold py-4 rounded-xl shadow-lg active:scale-95 transition">Se connecter</button>
-                </form>
-
-                <form id="form-register" onsubmit="window.app.handleRegister(event)" class="hidden space-y-4">
-                    <input type="text" id="reg-name" placeholder="Nom complet" class="w-full p-4 rounded-xl border outline-none" required>
-                    <input type="email" id="reg-email" placeholder="Email" class="w-full p-4 rounded-xl border outline-none" required>
-                    <input type="tel" id="reg-phone" placeholder="Téléphone (ex: 077001122)" class="w-full p-4 rounded-xl border outline-none" required>
-                    <input type="password" id="reg-password" placeholder="Mot de passe" class="w-full p-4 rounded-xl border outline-none" required>
-                    <button type="submit" class="w-full bg-slate-800 text-white font-bold py-4 rounded-xl shadow-lg active:scale-95 transition">Créer mon compte</button>
-                </form>
-            </div>
-        </section>
-
-        <!-- PAGE : TABLEAU DE BORD (DASHBOARD) -->
-        <section id="page-dashboard" class="page container mx-auto px-4">
-            <div class="bg-gradient-to-br from-brand-green to-emerald-700 rounded-3xl p-6 text-white shadow-xl mb-6 relative overflow-hidden">
-                <div class="relative z-10">
-                    <p class="text-sm opacity-80 font-bold uppercase tracking-wider">Solde de l'enclos</p>
-                    <h3 class="text-4xl font-black my-1"><span id="balance-doge">0.00</span> <span class="text-brand-gold">DOGE</span></h3>
-                    <p class="text-xs opacity-70">≈ <span id="balance-xaf">0</span> FCFA</p>
+                <div class="grid grid-cols-1 gap-4">
+                    <div class="bg-white p-6 rounded-2xl flex items-center gap-4 shadow-sm border border-slate-100">
+                        <div class="w-12 h-12 bg-blue-50 text-blue-500 rounded-xl flex items-center justify-center"><i class="fas fa-history"></i></div>
+                        <div>
+                            <h4 class="text-sm font-extrabold">Historique</h4>
+                            <p class="text-xs text-slate-400">Aucune transaction pour le moment.</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="absolute -right-4 -bottom-4 opacity-10 text-8xl"><i class="fas fa-piggy-bank"></i></div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-4 mb-8">
-                <button onclick="window.app.initiatePayment()" class="bg-white p-4 rounded-2xl shadow-sm border flex flex-col items-center gap-2 active:scale-95 transition">
-                    <div class="w-12 h-12 bg-green-100 text-brand-green rounded-full flex items-center justify-center text-xl"><i class="fas fa-plus"></i></div>
-                    <span class="font-bold text-sm">Déposer</span>
-                </button>
-                <button onclick="window.app.handleWithdraw()" class="bg-white p-4 rounded-2xl shadow-sm border flex flex-col items-center gap-2 active:scale-95 transition">
-                    <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center text-xl"><i class="fas fa-arrow-up"></i></div>
-                    <span class="font-bold text-sm">Retirer</span>
-                </button>
-            </div>
-
-            <h3 class="font-black text-slate-800 mb-4 flex items-center gap-2">
-                <i class="fas fa-paw text-brand-green"></i> Mon Elevage
-            </h3>
-            <div id="my-animals-list" class="space-y-4 mb-20">
-                <!-- Animaux chargés dynamiquement -->
             </div>
         </section>
 
-        <!-- PAGE : MARCHE (STORE) -->
-        <section id="page-market" class="page container mx-auto px-4">
-            <h2 class="text-2xl font-black mb-6">Marché aux Bestiaux</h2>
-            <div id="market-list" class="grid grid-cols-2 gap-4 mb-24">
-                <!-- Items du marché -->
-            </div>
+        <!-- SECTION : PAIEMENT EN COURS -->
+        <section id="page-pending" class="page text-center pt-20">
+            <div class="loader ease-linear rounded-full border-4 border-t-4 border-slate-200 h-16 w-16 mb-6 mx-auto"></div>
+            <h2 class="text-xl font-bold mb-2">Liaison Maketou...</h2>
+            <p class="text-slate-400">Ne fermez pas cette fenêtre.</p>
         </section>
 
-        <!-- PAGE : CONFIRMATION PAIEMENT -->
-        <section id="page-confirmation" class="page container mx-auto px-4 pt-10 text-center">
-            <div id="payment-status-loading">
-                <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-16 w-16 mb-6 mx-auto"></div>
-                <h2 class="text-2xl font-bold">Vérification Maketou...</h2>
-            </div>
-            <div id="payment-status-success" class="hidden">
-                <div class="text-brand-green text-6xl mb-4"><i class="fas fa-check-circle"></i></div>
-                <h2 class="text-2xl font-black mb-2">Paiement Reçu !</h2>
-                <p class="text-slate-500 mb-6">Votre enclos a été crédité.</p>
-                <button onclick="window.app.navigate('dashboard')" class="bg-brand-green text-white font-bold py-3 px-8 rounded-xl">Retour à l'enclos</button>
-            </div>
-        </section>
-
-    </div>
-
-    <!-- Navigation Basse -->
-    <nav id="bottom-nav" class="hidden fixed bottom-0 w-full glass-effect border-t px-6 py-3 flex justify-around items-center z-50">
-        <button onclick="window.app.navigate('dashboard')" id="nav-dashboard" class="flex flex-col items-center gap-1 text-brand-green">
-            <i class="fas fa-home text-xl"></i>
-            <span class="text-[10px] font-bold uppercase">Enclos</span>
-        </button>
-        <button onclick="window.app.navigate('market')" id="nav-market" class="flex flex-col items-center gap-1 text-slate-400">
-            <i class="fas fa-store text-xl"></i>
-            <span class="text-[10px] font-bold uppercase">Marché</span>
-        </button>
-        <button onclick="window.app.navigate('profile')" id="nav-profile" class="flex flex-col items-center gap-1 text-slate-400">
-            <i class="fas fa-user-circle text-xl"></i>
-            <span class="text-[10px] font-bold uppercase">Compte</span>
-        </button>
-    </nav>
+    </main>
 
     <script type="module">
-        // Importation SDK Firebase (v9+)
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, updateDoc, doc, query, where, onSnapshot, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, getDoc, updateDoc, onSnapshot, increment, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-        // Configuration identique à GabonJob
         const firebaseConfig = {
             apiKey: "AIzaSyBJzlHhdhC6Vzhet_fJ4vHe30FltBJzOQ4",
             authDomain: "farm-empire-89f3e.firebaseapp.com",
@@ -157,317 +154,164 @@
             appId: "1:360652511886:web:2af44776b3fb963d3e47df"
         };
 
-        const MAKETOU_CONFIG = {
+        const MAKETOU = {
             apiKey: 'msk_35395609d94589dfe55e846950480c47fb9f44af58f590faf6ab2bbe0a0c2014',
-            baseUrl: 'https://api.maketou.net',
-            productDocumentId: '0bdd242d-3ae3-4640-816e-97a5e731796b', // Produit 2000 FCFA
-            dogePerPayment: 28.15 // Valeur créditée pour 2000 FCFA
+            productId: '0bdd242d-3ae3-4640-816e-97a5e731796b' // Produit "Service Activation 2000"
         };
 
-        // Initialisation
-        const firebaseApp = initializeApp(firebaseConfig);
-        const db = getFirestore(firebaseApp);
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
 
-        // Architecture APP (Structure objet comme GabonJob)
-        const app = {
-            currentUser: null,
-            marketItems: [
-                { id: 1, name: "Poussin", price: 10, daily: 0.8, icon: "🐣", color: "amber" },
-                { id: 2, name: "Canard", price: 25, daily: 2.2, icon: "🦆", color: "blue" },
-                { id: 3, name: "Mouton", price: 100, daily: 9.5, icon: "🐑", color: "slate" },
-                { id: 4, name: "Vache", price: 500, daily: 52, icon: "🐄", color: "orange" }
-            ],
+        const AppManager = {
+            user: null,
 
             init: async function() {
-                // Session Check
-                const saved = sessionStorage.getItem('fe_user');
-                if(saved) {
-                    this.currentUser = JSON.parse(saved);
-                    this.startUserSync();
-                    this.navigate('dashboard');
-                }
+                const saved = localStorage.getItem('fe_user_id');
+                if(saved) this.loadUser(saved);
 
-                // Check URL pour retour de paiement
+                // Check retour paiement
                 const params = new URLSearchParams(window.location.search);
-                if(params.get('cartId')) {
-                    this.navigate('confirmation');
-                    this.verifyPayment(params.get('cartId'));
+                const cartId = params.get('cartId');
+                if(cartId) {
+                    this.navigate('pending');
+                    this.verifyPayment(cartId);
                 }
             },
 
-            // --- NAVIGATION ---
-            navigate: function(pageId) {
+            navigate: function(id) {
                 document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-                const target = document.getElementById(`page-${pageId}`);
-                if(target) target.classList.add('active');
-
-                // Update Navbar
-                const nav = document.getElementById('bottom-nav');
-                if(this.currentUser) {
-                    nav.classList.remove('hidden');
-                    document.getElementById('user-status').classList.remove('hidden');
-                    document.getElementById('display-name').innerText = this.currentUser.name;
-                    
-                    // Highlight nav icons
-                    document.querySelectorAll('nav button').forEach(b => b.classList.replace('text-brand-green', 'text-slate-400'));
-                    const activeBtn = document.getElementById(`nav-${pageId}`);
-                    if(activeBtn) activeBtn.classList.replace('text-slate-400', 'text-brand-green');
-                }
-
-                if(pageId === 'market') this.renderMarket();
-                if(pageId === 'dashboard') this.renderFarm();
-                
+                document.getElementById(`page-${id}`).classList.add('active');
                 window.scrollTo(0,0);
             },
 
-            // --- AUTH ---
-            toggleAuth: function(mode) {
-                document.getElementById('form-login').classList.toggle('hidden', mode !== 'login');
-                document.getElementById('form-register').classList.toggle('hidden', mode !== 'register');
-                const btnLogin = document.getElementById('btn-tab-login');
-                const btnReg = document.getElementById('btn-tab-reg');
+            handleAuth: async function(e) {
+                e.preventDefault();
+                const email = document.getElementById('auth-email').value.toLowerCase().trim();
+                const pass = document.getElementById('auth-password').value;
+                const userId = btoa(email).replace(/=/g, ''); // Simple ID base64
                 
-                if(mode === 'login') {
-                    btnLogin.className = "flex-1 py-2 rounded-lg font-bold text-brand-green bg-white shadow-sm";
-                    btnReg.className = "flex-1 py-2 rounded-lg font-bold text-gray-400";
-                } else {
-                    btnReg.className = "flex-1 py-2 rounded-lg font-bold text-slate-800 bg-white shadow-sm";
-                    btnLogin.className = "flex-1 py-2 rounded-lg font-bold text-gray-400";
+                const btn = document.getElementById('btn-auth');
+                btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>';
+
+                const userRef = doc(db, "users", userId);
+                const snap = await getDoc(userRef);
+
+                if(!snap.exists()) {
+                    // Création compte
+                    const newUser = {
+                        email,
+                        password: pass,
+                        name: email.split('@')[0],
+                        balance: 0,
+                        isActive: false,
+                        activatedAt: null,
+                        lastClaim: null
+                    };
+                    await setDoc(userRef, newUser);
+                } else if(snap.data().password !== pass) {
+                    alert("Mot de passe incorrect");
+                    btn.innerText = "Accéder à mon espace";
+                    return;
                 }
+
+                localStorage.setItem('fe_user_id', userId);
+                this.loadUser(userId);
             },
 
-            handleLogin: async function(e) {
-                e.preventDefault();
-                const email = document.getElementById('login-email').value;
-                const pass = document.getElementById('login-password').value;
-
-                const q = query(collection(db, "users"), where("email", "==", email), where("password", "==", pass));
-                const snap = await getDocs(q);
-
-                if(!snap.empty) {
-                    this.currentUser = { id: snap.docs[0].id, ...snap.docs[0].data() };
-                    sessionStorage.setItem('fe_user', JSON.stringify(this.currentUser));
-                    this.startUserSync();
-                    this.navigate('dashboard');
-                } else {
-                    alert("Compte non trouvé ou mot de passe incorrect.");
-                }
-            },
-
-            handleRegister: async function(e) {
-                e.preventDefault();
-                const newUser = {
-                    name: document.getElementById('reg-name').value,
-                    email: document.getElementById('reg-email').value,
-                    phone: document.getElementById('reg-phone').value,
-                    password: document.getElementById('reg-password').value,
-                    balance: 0,
-                    createdAt: new Date().toISOString()
-                };
-
-                try {
-                    const docRef = await addDoc(collection(db, "users"), newUser);
-                    this.currentUser = { id: docRef.id, ...newUser };
-                    sessionStorage.setItem('fe_user', JSON.stringify(this.currentUser));
-                    this.startUserSync();
-                    this.navigate('dashboard');
-                } catch(err) {
-                    alert("Erreur lors de l'inscription.");
-                }
-            },
-
-            logout: function() {
-                sessionStorage.removeItem('fe_user');
-                window.location.href = window.location.origin + window.location.pathname;
-            },
-
-            // --- TEMPS REEL (SYNC) ---
-            startUserSync: function() {
-                if(!this.currentUser) return;
-                onSnapshot(doc(db, "users", this.currentUser.id), (snap) => {
+            loadUser: function(id) {
+                onSnapshot(doc(db, "users", id), (snap) => {
                     if(snap.exists()) {
-                        const data = snap.data();
-                        this.currentUser = { id: snap.id, ...data };
-                        document.getElementById('balance-doge').innerText = data.balance.toFixed(2);
-                        document.getElementById('balance-xaf').innerText = Math.floor(data.balance * 71).toLocaleString();
+                        this.user = { id: snap.id, ...snap.data() };
+                        this.updateUI();
+                        this.navigate('dashboard');
                     }
                 });
             },
 
-            // --- PAIEMENT MAKETOU (Identique à GabonJob) ---
-            initiatePayment: async function() {
-                const btn = event.currentTarget;
-                const originalContent = btn.innerHTML;
-                btn.innerHTML = '<i class="fas fa-circle-notch fa-spin text-2xl"></i>';
+            updateUI: function() {
+                document.getElementById('user-info').classList.remove('hidden');
+                document.getElementById('user-name').innerText = this.user.name;
+                
+                if(this.user.isActive) {
+                    document.getElementById('status-active').classList.remove('hidden');
+                    document.getElementById('status-inactive').classList.add('hidden');
+                    document.getElementById('balance-val').innerText = (this.user.balance || 0).toFixed(2);
+                } else {
+                    document.getElementById('status-active').classList.add('hidden');
+                    document.getElementById('status-inactive').classList.remove('hidden');
+                }
+            },
+
+            activateService: async function() {
+                const btn = document.getElementById('btn-pay');
                 btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-circle-notch fa-spin mx-auto"></i>';
 
                 try {
-                    // Nettoyage du téléphone (format international pour Maketou)
-                    let phone = this.currentUser.phone.replace(/\D/g, '');
-                    if(phone.startsWith('0')) phone = phone.substring(1);
-                    if(!phone.startsWith('241')) phone = '241' + phone;
-                    const finalPhone = '+' + phone;
-
-                    const payload = {
-                        productDocumentId: MAKETOU_CONFIG.productDocumentId,
-                        email: this.currentUser.email,
-                        firstName: this.currentUser.name.split(' ')[0],
-                        lastName: this.currentUser.name.split(' ')[1] || 'Client',
-                        phone: finalPhone,
-                        redirectURL: window.location.href.split('?')[0] // Retourne à la racine
-                    };
-
-                    const response = await fetch(`${MAKETOU_CONFIG.baseUrl}/api/v1/stores/cart/checkout`, {
+                    const response = await fetch('https://api.maketou.net/api/v1/stores/cart/checkout', {
                         method: 'POST',
-                        headers: { 
-                            'Authorization': `Bearer ${MAKETOU_CONFIG.apiKey}`,
-                            'Content-Type': 'application/json' 
+                        headers: {
+                            'Authorization': `Bearer ${MAKETOU.apiKey}`,
+                            'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify(payload)
+                        body: JSON.stringify({
+                            productDocumentId: MAKETOU.productId,
+                            email: this.user.email,
+                            firstName: this.user.name,
+                            lastName: "Client",
+                            redirectURL: window.location.href.split('?')[0]
+                        })
                     });
 
                     const data = await response.json();
-
                     if(data.redirectUrl) {
-                        // On stocke l'ID en Firebase pour sécurité (optionnel mais recommandé)
-                        await addDoc(collection(db, "payments"), {
-                            userId: this.currentUser.id,
-                            cartId: data.cartId,
-                            status: 'pending',
-                            amount: 2000,
-                            timestamp: serverTimestamp()
-                        });
-                        
-                        // Redirection vers Maketou
                         window.location.href = data.redirectUrl;
                     } else {
-                        alert("Erreur Maketou: " + (data.message || "Problème de configuration"));
-                        btn.innerHTML = originalContent;
-                        btn.disabled = false;
+                        throw new Error("Erreur Maketou");
                     }
-                } catch(err) {
-                    console.error(err);
-                    alert("Impossible de joindre le service de paiement.");
-                    btn.innerHTML = originalContent;
+                } catch(e) {
+                    alert("Erreur service de paiement. Réessayez.");
+                    btn.innerHTML = '<span>ACTIVER L\'ENCLOS</span><span class="bg-white/20 px-3 py-1 rounded-lg text-sm">2 000 FCFA</span>';
                     btn.disabled = false;
                 }
             },
 
             verifyPayment: async function(cartId) {
                 try {
-                    const response = await fetch(`${MAKETOU_CONFIG.baseUrl}/api/v1/stores/cart/${cartId}`, {
-                        headers: { 'Authorization': `Bearer ${MAKETOU_CONFIG.apiKey}` }
+                    const response = await fetch(`https://api.maketou.net/api/v1/stores/cart/${cartId}`, {
+                        headers: { 'Authorization': `Bearer ${MAKETOU.apiKey}` }
                     });
                     const data = await response.json();
 
-                    document.getElementById('payment-status-loading').classList.add('hidden');
-
                     if(data.status === 'completed' || data.status === 'success') {
-                        // Créditer le compte
-                        const userRef = doc(db, "users", this.currentUser.id);
-                        await updateDoc(userRef, { 
-                            balance: increment(MAKETOU_CONFIG.dogePerPayment) 
+                        const userId = localStorage.getItem('fe_user_id');
+                        await updateDoc(doc(db, "users", userId), {
+                            isActive: true,
+                            activatedAt: serverTimestamp(),
+                            lastClaim: serverTimestamp(),
+                            balance: 1.0 // Bonus de bienvenue
                         });
-                        document.getElementById('payment-status-success').classList.remove('hidden');
-                    } else {
-                        alert("Paiement non finalisé (Statut: " + data.status + ")");
-                        this.navigate('dashboard');
+                        alert("Service Activé ! Votre enclos produit maintenant du DOGE.");
                     }
                 } catch(e) {
                     console.error(e);
-                    this.navigate('dashboard');
                 }
+                this.navigate('dashboard');
             },
 
-            // --- JEU & RENDU ---
-            renderMarket: function() {
-                const list = document.getElementById('market-list');
-                list.innerHTML = this.marketItems.map(item => `
-                    <div class="bg-white p-4 rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center">
-                        <span class="text-4xl mb-2">${item.icon}</span>
-                        <h4 class="font-bold text-slate-800">${item.name}</h4>
-                        <p class="text-brand-green font-black text-lg">${item.price} <span class="text-[10px]">DOGE</span></p>
-                        <p class="text-[10px] text-gray-400 mb-4">+${item.daily} DOGE / jour</p>
-                        <button onclick="window.app.buyAnimal(${item.id})" class="w-full bg-slate-50 hover:bg-brand-green hover:text-white text-brand-green py-2 rounded-xl text-xs font-bold transition">ACHETER</button>
-                    </div>
-                `).join('');
+            logout: function() {
+                localStorage.clear();
+                window.location.reload();
             },
 
-            buyAnimal: async function(itemId) {
-                const item = this.marketItems.find(i => i.id === itemId);
-                if(this.currentUser.balance < item.price) {
-                    alert("Solde insuffisant ! Rechargez votre enclos.");
-                    return;
-                }
-
-                try {
-                    // Retrait solde
-                    await updateDoc(doc(db, "users", this.currentUser.id), {
-                        balance: increment(-item.price)
-                    });
-
-                    // Ajout animal
-                    await addDoc(collection(db, "users", this.currentUser.id, "animals"), {
-                        ...item,
-                        purchasedAt: serverTimestamp()
-                    });
-
-                    alert(`${item.name} a été ajouté à votre enclos !`);
-                    this.navigate('dashboard');
-                } catch(e) {
-                    alert("Erreur lors de l'achat.");
-                }
-            },
-
-            renderFarm: async function() {
-                const list = document.getElementById('my-animals-list');
-                list.innerHTML = '<p class="text-center text-gray-400 py-10">Chargement de votre enclos...</p>';
-
-                const snap = await getDocs(collection(db, "users", this.currentUser.id, "animals"));
-                
-                if(snap.empty) {
-                    list.innerHTML = `
-                        <div class="bg-white p-10 rounded-3xl border border-dashed border-gray-300 text-center">
-                            <i class="fas fa-ghost text-4xl text-gray-200 mb-4"></i>
-                            <p class="text-gray-400 text-sm">Votre enclos est vide.</p>
-                            <button onclick="window.app.navigate('market')" class="mt-4 text-brand-green font-bold">Aller au marché</button>
-                        </div>
-                    `;
-                    return;
-                }
-
-                list.innerHTML = snap.docs.map(doc => {
-                    const data = doc.data();
-                    return `
-                        <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between">
-                            <div class="flex items-center gap-4">
-                                <div class="w-12 h-12 bg-gray-50 rounded-xl flex items-center justify-center text-2xl">${data.icon}</div>
-                                <div>
-                                    <h4 class="font-bold text-slate-800">${data.name}</h4>
-                                    <p class="text-[10px] text-gray-400">Production en cours...</p>
-                                </div>
-                            </div>
-                            <div class="text-right">
-                                <p class="text-brand-green font-black text-sm">+${data.daily} DOGE</p>
-                                <p class="text-[9px] uppercase font-bold text-gray-300">Quotidien</p>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-            },
-
-            handleWithdraw: function() {
-                alert("Retraits : Le service de retrait vers Airtel/Moov Money sera disponible après 24h d'élevage.");
+            withdraw: function() {
+                alert("Retrait : Votre solde actuel est insuffisant. Le minimum est de 50 DOGE.");
             }
         };
 
-        // Liaison globale
-        window.app = app;
+        window.app = AppManager;
+        AppManager.init();
 
-        // Lancement
-        document.addEventListener('DOMContentLoaded', () => {
-            app.init();
-        });
     </script>
 </body>
 </html>
