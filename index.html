@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Farm-Empire | Service d'Élevage Crypto</title>
+    <title>Farm-Empire | Élevage Crypto</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -13,105 +13,123 @@
                 extend: {
                     colors: {
                         brand: {
-                            green: '#059669',
-                            gold: '#fbbf24',
-                            dark: '#0f172a'
+                            green: '#10b981',
+                            dark: '#0f172a',
+                            gold: '#f59e0b'
                         }
                     }
                 }
             }
         }
     </script>
+
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+        body { font-family: 'Inter', sans-serif; }
         .page { display: none; }
         .page.active { display: block; }
-        .loader { border-top-color: #059669; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .glass { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); }
-        button:disabled { opacity: 0.6; cursor: not-allowed; }
+        .glass-nav { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,0,0,0.05); }
+        .card-shadow { box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05); }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900 pb-10">
+<body class="bg-gray-50 text-slate-900 min-h-screen">
 
-    <header class="glass fixed top-0 w-full z-50 border-b px-5 py-4 flex justify-between items-center">
-        <div class="flex items-center gap-2" onclick="window.location.reload()">
-            <div class="w-8 h-8 bg-brand-green rounded-lg flex items-center justify-center text-white font-extrabold text-sm">FE</div>
-            <span class="font-extrabold text-lg tracking-tighter">FARM-EMPIRE</span>
-        </div>
-        <div id="user-info" class="hidden flex items-center gap-3">
-            <span id="user-name" class="text-xs font-bold bg-slate-100 px-3 py-1.5 rounded-full text-slate-600">...</span>
-            <button onclick="window.app.logout()" class="text-slate-400 hover:text-red-500 transition"><i class="fas fa-sign-out-alt"></i></button>
-        </div>
-    </header>
-
-    <main id="content" class="pt-24 px-5 max-w-lg mx-auto">
-        
-        <!-- SECTION : AUTH -->
-        <section id="page-auth" class="page active">
-            <div class="text-center mb-8">
-                <h1 class="text-3xl font-extrabold text-slate-900 mb-2">Connexion</h1>
-                <p class="text-slate-500">Accédez à votre compte de minage DOGE.</p>
+    <!-- Navigation -->
+    <nav class="glass-nav fixed top-0 w-full z-50 px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center gap-2 cursor-pointer" onclick="location.reload()">
+            <div class="w-9 h-9 bg-brand-green rounded-xl flex items-center justify-center text-white shadow-lg shadow-green-200">
+                <i class="fas fa-leaf"></i>
             </div>
-            
-            <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
-                <form id="form-login" onsubmit="window.app.handleAuth(event)" class="space-y-4">
-                    <div id="auth-status" class="text-[10px] text-center font-bold text-amber-600 bg-amber-50 py-2 rounded-xl mb-2">
-                        <i class="fas fa-shield-alt mr-1"></i> Synchronisation avec le réseau...
+            <span class="font-extrabold text-xl tracking-tight">FARM-EMPIRE</span>
+        </div>
+        <div id="user-badge" class="hidden items-center gap-3 bg-white px-3 py-1.5 rounded-full border shadow-sm">
+            <span id="display-name" class="text-xs font-bold text-slate-600 uppercase tracking-wider">Compte</span>
+            <button onclick="app.logout()" class="text-red-400 hover:text-red-600 transition">
+                <i class="fas fa-power-off"></i>
+            </button>
+        </div>
+    </nav>
+
+    <main class="pt-28 pb-10 px-6 max-w-md mx-auto">
+
+        <!-- PAGE : AUTHENTIFICATION -->
+        <section id="page-auth" class="page active">
+            <div class="text-center mb-10">
+                <h1 class="text-3xl font-black text-slate-900 mb-3">Bienvenue</h1>
+                <p class="text-slate-500 font-medium leading-relaxed">Connectez-vous pour commencer votre élevage de Dogecoin.</p>
+            </div>
+
+            <div class="bg-white p-8 rounded-[2rem] card-shadow border border-gray-100">
+                <form id="auth-form" onsubmit="app.handleAuth(event)" class="space-y-5">
+                    <div id="status-bar" class="text-[10px] text-center font-black uppercase tracking-widest py-2 rounded-lg bg-slate-100 text-slate-400">
+                        <i class="fas fa-circle-notch fa-spin mr-2"></i> Connexion au réseau...
                     </div>
+                    
                     <div>
-                        <label class="text-xs font-bold text-slate-400 uppercase ml-1">Email</label>
-                        <input type="email" id="auth-email" class="w-full p-4 bg-slate-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-brand-green/20" placeholder="exemple@mail.com" required>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">Email de l'enclos</label>
+                        <input type="email" id="email" required class="w-full px-5 py-4 bg-gray-50 border-transparent rounded-2xl focus:bg-white focus:ring-4 focus:ring-green-100 transition outline-none font-semibold" placeholder="votre@email.com">
                     </div>
+
                     <div>
-                        <label class="text-xs font-bold text-slate-400 uppercase ml-1">Mot de passe</label>
-                        <input type="password" id="auth-password" class="w-full p-4 bg-slate-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-brand-green/20" placeholder="••••••••" required>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">Clé d'accès</label>
+                        <input type="password" id="password" required class="w-full px-5 py-4 bg-gray-50 border-transparent rounded-2xl focus:bg-white focus:ring-4 focus:ring-green-100 transition outline-none font-semibold" placeholder="••••••••">
                     </div>
-                    <button type="submit" id="btn-auth" disabled class="w-full bg-slate-900 text-white font-bold py-4 rounded-2xl shadow-lg active:scale-95 transition">
-                        Veuillez patienter...
+
+                    <button type="submit" id="auth-btn" disabled class="w-full bg-slate-900 text-white font-bold py-5 rounded-2xl shadow-xl hover:bg-black transition-all active:scale-95 disabled:opacity-50">
+                        Initialisation...
                     </button>
                 </form>
             </div>
         </section>
 
-        <!-- SECTION : DASHBOARD -->
+        <!-- PAGE : DASHBOARD -->
         <section id="page-dashboard" class="page">
-            <div id="status-inactive" class="hidden">
-                <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100 text-center mb-6">
+            <!-- État Inactif -->
+            <div id="view-inactive" class="hidden space-y-6">
+                <div class="bg-white p-10 rounded-[2.5rem] card-shadow border border-gray-100 text-center">
                     <div class="w-20 h-20 bg-amber-50 text-amber-500 rounded-full flex items-center justify-center text-3xl mx-auto mb-6">
                         <i class="fas fa-lock"></i>
                     </div>
-                    <h2 class="text-2xl font-extrabold mb-3">Enclos Inactif</h2>
-                    <p class="text-slate-500 mb-8 leading-relaxed">Activez votre service pour générer des **DOGE**.</p>
+                    <h2 class="text-2xl font-extrabold mb-3">Enclos non activé</h2>
+                    <p class="text-slate-500 mb-8 leading-relaxed">Votre terrain est prêt, mais vous n'avez pas encore activé le pack d'élevage crypto.</p>
                     
-                    <button onclick="window.app.activateService()" id="btn-pay" class="w-full bg-brand-green text-white font-black py-5 rounded-2xl shadow-xl flex justify-between items-center px-8 active:scale-95 transition">
+                    <button onclick="app.requestActivation()" class="w-full bg-brand-green text-white font-black py-5 rounded-2xl shadow-lg shadow-green-100 flex justify-between items-center px-8 transition hover:scale-[1.02]">
                         <span>ACTIVER L'ENCLOS</span>
-                        <span class="bg-white/20 px-3 py-1 rounded-lg text-sm">2 000 FCFA</span>
+                        <span class="bg-black/10 px-3 py-1 rounded-lg text-sm tracking-tighter">2 000 FCFA</span>
                     </button>
                 </div>
             </div>
 
-            <div id="status-active" class="hidden">
-                <div class="bg-slate-900 rounded-[2.5rem] p-8 text-white shadow-2xl mb-6 relative overflow-hidden">
+            <!-- État Actif -->
+            <div id="view-active" class="hidden space-y-6">
+                <div class="bg-slate-900 rounded-[2.5rem] p-10 text-white shadow-2xl relative overflow-hidden">
                     <div class="relative z-10">
-                        <div class="flex items-center gap-2 mb-6">
+                        <div class="flex items-center gap-2 mb-8">
                             <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-                            <span class="text-[10px] font-bold tracking-widest uppercase opacity-60">Production en cours</span>
+                            <span class="text-[10px] font-bold tracking-[0.2em] uppercase opacity-60">Production en cours</span>
                         </div>
-                        <p class="text-xs font-bold opacity-50 uppercase mb-1">Solde actuel</p>
-                        <h3 class="text-5xl font-black mb-4"><span id="balance-val">0.00</span> <span class="text-brand-gold text-2xl">DOGE</span></h3>
-                        <button onclick="window.app.withdraw()" class="w-full bg-white/10 hover:bg-white/20 py-3 rounded-xl font-bold text-sm transition">Retirer mes gains</button>
+                        <p class="text-[10px] font-bold opacity-40 uppercase tracking-widest mb-1">Total Miné</p>
+                        <h3 class="text-5xl font-black mb-8 flex items-baseline gap-2">
+                            <span id="balance">0.00</span>
+                            <span class="text-brand-gold text-xl font-bold">DOGE</span>
+                        </h3>
+                        <button onclick="app.requestWithdraw()" class="w-full bg-white/10 hover:bg-white/20 py-4 rounded-2xl font-bold text-sm transition border border-white/5 backdrop-blur-sm">
+                            Retirer mes gains
+                        </button>
+                    </div>
+                    <i class="fas fa-seedling absolute -right-8 -bottom-8 text-[12rem] opacity-5"></i>
+                </div>
+
+                <div class="bg-white p-6 rounded-3xl border border-gray-100 flex items-center gap-4">
+                    <div class="w-12 h-12 bg-blue-50 text-blue-500 rounded-2xl flex items-center justify-center text-xl">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Rendement</p>
+                        <p class="text-sm font-extrabold">+2.5 DOGE / jour</p>
                     </div>
                 </div>
             </div>
-        </section>
-
-        <!-- SECTION : PENDING -->
-        <section id="page-pending" class="page text-center pt-20">
-            <div class="loader ease-linear rounded-full border-4 border-t-4 border-slate-200 h-16 w-16 mb-6 mx-auto"></div>
-            <h2 class="text-xl font-bold mb-2">Traitement...</h2>
-            <p class="text-slate-400">Vérification de la transaction.</p>
         </section>
 
     </main>
@@ -119,146 +137,144 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, updateDoc, onSnapshot, serverTimestamp, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+        // Configuration Firebase (Gérée par l'environnement)
         const firebaseConfig = JSON.parse(__firebase_config);
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'farm-empire-89f3e';
-        const initialToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        const customToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
-        const firebaseApp = initializeApp(firebaseConfig);
-        const auth = getAuth(firebaseApp);
-        const db = getFirestore(firebaseApp);
+        // Initialisation
+        const fApp = initializeApp(firebaseConfig);
+        const auth = getAuth(fApp);
+        const db = getFirestore(fApp);
 
-        const AppManager = {
-            user: null,
-            userId: null,
-            isAuthReady: false,
+        const app = {
+            currentUser: null,
+            isReady: false,
 
             init: async function() {
-                // Authentification obligatoire avant toute chose
                 try {
-                    if (initialToken) {
-                        await signInWithCustomToken(auth, initialToken);
+                    // Authentification initiale pour avoir accès à Firestore
+                    if (customToken) {
+                        await signInWithCustomToken(auth, customToken);
                     } else {
                         await signInAnonymously(auth);
                     }
+
+                    onAuthStateChanged(auth, (user) => {
+                        if (user) {
+                            this.isReady = true;
+                            this.setAuthStateUI(true);
+                            this.checkPersistedLogin();
+                        }
+                    });
                 } catch (e) {
-                    console.error("Auth Error:", e);
+                    console.error("Erreur Init App:", e);
                 }
-
-                onAuthStateChanged(auth, (user) => {
-                    if (user) {
-                        this.isAuthReady = true;
-                        this.updateAuthUI();
-                        // Reconnexion automatique si email présent
-                        const savedEmail = localStorage.getItem('fe_email');
-                        if (savedEmail) this.autoLogin(savedEmail);
-                    }
-                });
             },
 
-            updateAuthUI: function() {
-                const btn = document.getElementById('btn-auth');
-                const status = document.getElementById('auth-status');
-                if (btn) {
+            setAuthStateUI: function(ready) {
+                const btn = document.getElementById('auth-btn');
+                const bar = document.getElementById('status-bar');
+                if (ready) {
                     btn.disabled = false;
-                    btn.innerText = "Accéder à l'enclos";
-                }
-                if (status) {
-                    status.innerHTML = '<i class="fas fa-check-circle text-green-500 mr-1"></i> Réseau prêt';
-                    status.className = "text-[10px] text-center font-bold text-green-600 bg-green-50 py-2 rounded-xl mb-2";
+                    btn.innerText = "Rejoindre l'enclos";
+                    bar.innerHTML = '<i class="fas fa-check-circle text-green-500 mr-2"></i> Prêt pour connexion';
+                    bar.className = "text-[10px] text-center font-black uppercase tracking-widest py-2 rounded-lg bg-green-50 text-green-600";
                 }
             },
 
-            // RÈGLE 1 : Utilisation du dossier public pour permettre l'accès par email
-            getDocRef: function(email) {
-                const safeId = btoa(email).replace(/[^a-zA-Z0-9]/g, '');
-                return doc(db, 'artifacts', appId, 'public', 'data', 'users', safeId);
+            // RÈGLE 1 : Chemin Firestore autorisé (dossier public/data)
+            getRef: function(email) {
+                const encodedId = btoa(email.toLowerCase()).replace(/[^a-zA-Z0-9]/g, '');
+                return doc(db, 'artifacts', appId, 'public', 'data', 'members', encodedId);
             },
 
             handleAuth: async function(e) {
                 e.preventDefault();
-                if (!this.isAuthReady) return;
+                if (!this.isReady) return;
 
-                const email = document.getElementById('auth-email').value.toLowerCase().trim();
-                const pass = document.getElementById('auth-password').value;
-                const btn = document.getElementById('btn-auth');
-                
+                const email = document.getElementById('email').value.trim();
+                const password = document.getElementById('password').value;
+                const btn = document.getElementById('auth-btn');
+
                 btn.disabled = true;
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Vérification...';
+                btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Vérification...';
 
                 try {
-                    const docRef = this.getDocRef(email);
+                    const docRef = this.getRef(email);
                     const snap = await getDoc(docRef);
 
                     if (!snap.exists()) {
-                        // Création de compte
-                        const newUser = {
-                            email,
-                            password: pass,
+                        // Création d'un nouvel utilisateur
+                        const data = {
+                            email: email.toLowerCase(),
+                            password: password,
                             name: email.split('@')[0],
                             balance: 0,
                             isActive: false,
-                            createdAt: serverTimestamp()
+                            joinedAt: serverTimestamp()
                         };
-                        await setDoc(docRef, newUser);
-                        this.user = newUser;
+                        await setDoc(docRef, data);
+                        this.currentUser = data;
                     } else {
-                        // Connexion
+                        // Vérification existant
                         const data = snap.data();
-                        if (data.password !== pass) {
-                            alert("Mot de passe incorrect.");
+                        if (data.password !== password) {
+                            alert("Accès refusé : Clé d'accès incorrecte.");
                             btn.disabled = false;
-                            btn.innerText = "Accéder à l'enclos";
+                            btn.innerText = "Rejoindre l'enclos";
                             return;
                         }
-                        this.user = data;
+                        this.currentUser = data;
                     }
 
-                    localStorage.setItem('fe_email', email);
-                    this.startListener(email);
+                    localStorage.setItem('farm_empire_session', email.toLowerCase());
+                    this.startSession(email.toLowerCase());
                 } catch (err) {
-                    console.error("Firestore Error:", err);
-                    alert("Erreur de connexion au serveur. Vérifiez votre connexion.");
+                    console.error("Auth Exception:", err);
+                    alert("Erreur de synchronisation. Vérifiez votre connexion.");
                     btn.disabled = false;
-                    btn.innerText = "Accéder à l'enclos";
+                    btn.innerText = "Rejoindre l'enclos";
                 }
             },
 
-            autoLogin: function(email) {
-                this.startListener(email);
+            checkPersistedLogin: function() {
+                const session = localStorage.getItem('farm_empire_session');
+                if (session) this.startSession(session);
             },
 
-            startListener: function(email) {
-                const docRef = this.getDocRef(email);
+            startSession: function(email) {
+                const docRef = this.getRef(email);
                 onSnapshot(docRef, (snap) => {
                     if (snap.exists()) {
-                        this.user = snap.data();
-                        this.updateDashboard();
+                        this.currentUser = snap.data();
+                        this.syncUI();
                         this.navigate('dashboard');
                     }
                 }, (err) => {
-                    console.error("Snapshot Error:", err);
+                    console.error("Live Sync Error:", err);
                 });
             },
 
-            updateDashboard: function() {
-                const info = document.getElementById('user-info');
-                const name = document.getElementById('user-name');
-                const activeSec = document.getElementById('status-active');
-                const inactiveSec = document.getElementById('status-inactive');
-                const bal = document.getElementById('balance-val');
+            syncUI: function() {
+                const badge = document.getElementById('user-badge');
+                const displayName = document.getElementById('display-name');
+                const viewActive = document.getElementById('view-active');
+                const viewInactive = document.getElementById('view-inactive');
+                const balanceEl = document.getElementById('balance');
 
-                if (info) info.classList.remove('hidden');
-                if (name) name.innerText = this.user.name;
+                if (badge) badge.classList.replace('hidden', 'flex');
+                if (displayName) displayName.innerText = this.currentUser.name;
 
-                if (this.user.isActive) {
-                    activeSec.classList.remove('hidden');
-                    inactiveSec.classList.add('hidden');
-                    bal.innerText = (this.user.balance || 0).toFixed(2);
+                if (this.currentUser.isActive) {
+                    viewActive.classList.remove('hidden');
+                    viewInactive.classList.add('hidden');
+                    if (balanceEl) balanceEl.innerText = (this.currentUser.balance || 0).toFixed(2);
                 } else {
-                    activeSec.classList.add('hidden');
-                    inactiveSec.classList.remove('hidden');
+                    viewActive.classList.add('hidden');
+                    viewInactive.classList.remove('hidden');
                 }
             },
 
@@ -268,17 +284,22 @@
             },
 
             logout: function() {
-                localStorage.clear();
-                window.location.reload();
+                localStorage.removeItem('farm_empire_session');
+                location.reload();
             },
 
-            withdraw: function() {
-                alert("Solde insuffisant pour un retrait (minimum 50 DOGE).");
+            requestActivation: function() {
+                alert("Redirection vers le portail de paiement sécurisé...");
+                // Ici, l'intégration de Maketou peut être remise dès que vous le souhaitez
+            },
+
+            requestWithdraw: function() {
+                alert("Seuil de retrait : 50 DOGE (Solde insuffisant)");
             }
         };
 
-        window.app = AppManager;
-        AppManager.init();
+        window.app = app;
+        app.init();
     </script>
 </body>
 </html>
