@@ -36,7 +36,7 @@
 
     <!-- Header -->
     <header class="glass fixed top-0 w-full z-50 border-b px-5 py-4 flex justify-between items-center">
-        <div class="flex items-center gap-2" onclick="window.app.navigate('home')">
+        <div class="flex items-center gap-2" onclick="window.app.navigate('auth')">
             <div class="w-8 h-8 bg-brand-green rounded-lg flex items-center justify-center text-white font-extrabold text-sm">FE</div>
             <span class="font-extrabold text-lg tracking-tighter">FARM-EMPIRE</span>
         </div>
@@ -71,9 +71,8 @@
             </div>
         </section>
 
-        <!-- SECTION : DASHBOARD (LE SERVICE) -->
+        <!-- SECTION : DASHBOARD -->
         <section id="page-dashboard" class="page">
-            <!-- Statut de l'enclos -->
             <div id="status-inactive" class="hidden">
                 <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100 text-center mb-6">
                     <div class="w-20 h-20 bg-amber-50 text-amber-500 rounded-full flex items-center justify-center text-3xl mx-auto mb-6">
@@ -132,113 +131,176 @@
             </div>
         </section>
 
-        <!-- SECTION : PAIEMENT EN COURS -->
+        <!-- SECTION : PENDING -->
         <section id="page-pending" class="page text-center pt-20">
             <div class="loader ease-linear rounded-full border-4 border-t-4 border-slate-200 h-16 w-16 mb-6 mx-auto"></div>
             <h2 class="text-xl font-bold mb-2">Liaison Maketou...</h2>
-            <p class="text-slate-400">Ne fermez pas cette fenêtre.</p>
+            <p class="text-slate-400">Vérification du paiement en cours.</p>
         </section>
 
     </main>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getFirestore, doc, setDoc, getDoc, updateDoc, onSnapshot, increment, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, updateDoc, onSnapshot, serverTimestamp, collection, query, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyBJzlHhdhC6Vzhet_fJ4vHe30FltBJzOQ4",
-            authDomain: "farm-empire-89f3e.firebaseapp.com",
-            projectId: "farm-empire-89f3e",
-            storageBucket: "farm-empire-89f3e.firebasestorage.app",
-            messagingSenderId: "360652511886",
-            appId: "1:360652511886:web:2af44776b3fb963d3e47df"
-        };
+        const firebaseConfig = JSON.parse(__firebase_config);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'farm-empire-89f3e';
+        const initialToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
         const MAKETOU = {
             apiKey: 'msk_35395609d94589dfe55e846950480c47fb9f44af58f590faf6ab2bbe0a0c2014',
-            productId: '0bdd242d-3ae3-4640-816e-97a5e731796b' // Produit "Service Activation 2000"
+            productId: '0bdd242d-3ae3-4640-816e-97a5e731796b'
         };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        const firebaseApp = initializeApp(firebaseConfig);
+        const auth = getAuth(firebaseApp);
+        const db = getFirestore(firebaseApp);
 
         const AppManager = {
             user: null,
+            firebaseUser: null,
 
             init: async function() {
-                const saved = localStorage.getItem('fe_user_id');
-                if(saved) this.loadUser(saved);
+                // RÈGLE 3 : Authentification d'abord
+                const initAuth = async () => {
+                    try {
+                        if (initialToken) {
+                            await signInWithCustomToken(auth, initialToken);
+                        } else {
+                            await signInAnonymously(auth);
+                        }
+                    } catch (e) {
+                        console.error("Auth Error:", e);
+                    }
+                };
+                await initAuth();
 
-                // Check retour paiement
+                onAuthStateChanged(auth, (fUser) => {
+                    this.firebaseUser = fUser;
+                    if (fUser) {
+                        // On vérifie si un utilisateur est déjà loggé via localStorage (identifiant local)
+                        const savedEmail = localStorage.getItem('fe_user_email');
+                        if (savedEmail) {
+                           this.loadUserByEmail(savedEmail);
+                        }
+                    }
+                });
+
                 const params = new URLSearchParams(window.location.search);
                 const cartId = params.get('cartId');
                 if(cartId) {
                     this.navigate('pending');
-                    this.verifyPayment(cartId);
+                    setTimeout(() => this.verifyPayment(cartId), 2000);
                 }
+            },
+
+            // RÈGLE 1 : Chemin de document strict utilisant l'UID Firebase pour les permissions
+            getUserDocPath: function() {
+                if (!this.firebaseUser) return null;
+                return doc(db, 'artifacts', appId, 'users', this.firebaseUser.uid, 'profile', 'userData');
             },
 
             navigate: function(id) {
                 document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-                document.getElementById(`page-${id}`).classList.add('active');
+                const target = document.getElementById(`page-${id}`);
+                if (target) target.classList.add('active');
                 window.scrollTo(0,0);
             },
 
             handleAuth: async function(e) {
                 e.preventDefault();
+                if (!this.firebaseUser) {
+                    alert("Connexion sécurisée en cours... Veuillez patienter.");
+                    return;
+                }
+
                 const email = document.getElementById('auth-email').value.toLowerCase().trim();
                 const pass = document.getElementById('auth-password').value;
-                const userId = btoa(email).replace(/=/g, ''); // Simple ID base64
                 
                 const btn = document.getElementById('btn-auth');
                 btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>';
 
-                const userRef = doc(db, "users", userId);
-                const snap = await getDoc(userRef);
+                try {
+                    // On cherche d'abord si l'utilisateur existe avec cet email dans les données publiques (pour la recherche)
+                    // Ou plus simplement, on utilise l'UID actuel pour stocker les infos si c'est une nouvelle session
+                    const userRef = this.getUserDocPath();
+                    const snap = await getDoc(userRef);
 
-                if(!snap.exists()) {
-                    // Création compte
-                    const newUser = {
-                        email,
-                        password: pass,
-                        name: email.split('@')[0],
-                        balance: 0,
-                        isActive: false,
-                        activatedAt: null,
-                        lastClaim: null
-                    };
-                    await setDoc(userRef, newUser);
-                } else if(snap.data().password !== pass) {
-                    alert("Mot de passe incorrect");
+                    if(!snap.exists()) {
+                        // Nouvel utilisateur pour cet UID Firebase
+                        const newUser = {
+                            email,
+                            password: pass,
+                            name: email.split('@')[0],
+                            balance: 0,
+                            isActive: false,
+                            activatedAt: null,
+                            lastClaim: null,
+                            uid: this.firebaseUser.uid
+                        };
+                        await setDoc(userRef, newUser);
+                        this.user = newUser;
+                    } else {
+                        const data = snap.data();
+                        // Vérification simple du mot de passe stocké
+                        if(data.password !== pass) {
+                            alert("Mot de passe incorrect pour cet appareil/session.");
+                            btn.innerText = "Accéder à mon espace";
+                            return;
+                        }
+                        this.user = data;
+                    }
+
+                    localStorage.setItem('fe_user_email', email);
+                    this.loadUser();
+                } catch (err) {
+                    console.error("Erreur Firestore:", err);
+                    alert("Erreur de synchronisation. Veuillez rafraîchir la page.");
                     btn.innerText = "Accéder à mon espace";
-                    return;
                 }
-
-                localStorage.setItem('fe_user_id', userId);
-                this.loadUser(userId);
             },
 
-            loadUser: function(id) {
-                onSnapshot(doc(db, "users", id), (snap) => {
+            // Chargement via l'UID Firebase actuel (le seul chemin autorisé)
+            loadUser: function() {
+                if (!this.firebaseUser) return;
+
+                const userRef = this.getUserDocPath();
+                onSnapshot(userRef, (snap) => {
                     if(snap.exists()) {
                         this.user = { id: snap.id, ...snap.data() };
                         this.updateUI();
                         this.navigate('dashboard');
                     }
+                }, (err) => {
+                    console.error("Erreur Flux de données (onSnapshot):", err);
                 });
             },
 
+            // Chargement initial si email sauvegardé
+            loadUserByEmail: async function(email) {
+                // Puisque les permissions sont par UID, on charge simplement l'UID actuel
+                this.loadUser();
+            },
+
             updateUI: function() {
-                document.getElementById('user-info').classList.remove('hidden');
-                document.getElementById('user-name').innerText = this.user.name;
+                const infoBox = document.getElementById('user-info');
+                const nameLabel = document.getElementById('user-name');
+                if (infoBox) infoBox.classList.remove('hidden');
+                if (nameLabel && this.user) nameLabel.innerText = this.user.name;
                 
-                if(this.user.isActive) {
-                    document.getElementById('status-active').classList.remove('hidden');
-                    document.getElementById('status-inactive').classList.add('hidden');
-                    document.getElementById('balance-val').innerText = (this.user.balance || 0).toFixed(2);
+                const activeSec = document.getElementById('status-active');
+                const inactiveSec = document.getElementById('status-inactive');
+                const balVal = document.getElementById('balance-val');
+
+                if(this.user && this.user.isActive) {
+                    if (activeSec) activeSec.classList.remove('hidden');
+                    if (inactiveSec) inactiveSec.classList.add('hidden');
+                    if (balVal) balVal.innerText = (this.user.balance || 0).toFixed(2);
                 } else {
-                    document.getElementById('status-active').classList.add('hidden');
-                    document.getElementById('status-inactive').classList.remove('hidden');
+                    if (activeSec) activeSec.classList.add('hidden');
+                    if (inactiveSec) inactiveSec.classList.remove('hidden');
                 }
             },
 
@@ -277,6 +339,7 @@
             },
 
             verifyPayment: async function(cartId) {
+                if (!this.firebaseUser) return;
                 try {
                     const response = await fetch(`https://api.maketou.net/api/v1/stores/cart/${cartId}`, {
                         headers: { 'Authorization': `Bearer ${MAKETOU.apiKey}` }
@@ -284,17 +347,17 @@
                     const data = await response.json();
 
                     if(data.status === 'completed' || data.status === 'success') {
-                        const userId = localStorage.getItem('fe_user_id');
-                        await updateDoc(doc(db, "users", userId), {
+                        const userRef = this.getUserDocPath();
+                        await updateDoc(userRef, {
                             isActive: true,
                             activatedAt: serverTimestamp(),
                             lastClaim: serverTimestamp(),
-                            balance: 1.0 // Bonus de bienvenue
+                            balance: 1.0 
                         });
-                        alert("Service Activé ! Votre enclos produit maintenant du DOGE.");
+                        alert("Félicitations ! Votre service d'élevage est activé.");
                     }
                 } catch(e) {
-                    console.error(e);
+                    console.error("Verification Error:", e);
                 }
                 this.navigate('dashboard');
             },
@@ -315,4 +378,3 @@
     </script>
 </body>
 </html>
-
